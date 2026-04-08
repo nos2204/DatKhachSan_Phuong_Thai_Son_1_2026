@@ -105,6 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: .center,
           children: [
             const Text('Họ tên: Nguyễn Việt Thái - MSV:23017239'),
+            const Text('Họ tên: Nguyễn Minh Phương - MSV: 23010190'),
+            const Text('Họ tên: Nguyễn Hoàng Sơn - MSV: 23010100')
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
