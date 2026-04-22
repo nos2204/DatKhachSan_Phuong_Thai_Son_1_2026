@@ -37,7 +37,6 @@ class _HotelManagementScreenState extends State<HotelManagementScreen> {
     Customer(name: 'Nguyễn Hoàng Sơn', id: '001xxx', roomAssigned: 'P102'),
   ];
 
-  // Controller để lấy dữ liệu từ các ô nhập (TextField)
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _roomController = TextEditingController();
@@ -46,7 +45,7 @@ class _HotelManagementScreenState extends State<HotelManagementScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Thêm Khách Thuê"),
+        title: const Text("Thêm Khách Hàng"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
