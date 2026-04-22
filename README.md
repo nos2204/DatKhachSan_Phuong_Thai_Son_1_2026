@@ -1,5 +1,6 @@
-App Quản Lý Khách Sạn (Hotel Management System)
-Dự án này là một ứng dụng quản lý khách sạn cơ bản được xây dựng bằng Flutter & Dart, tập trung vào việc quản lý phòng, khách hàng và quy trình đặt phòng thông qua các thao tác CRUD.
+# App Quản Lý Khách Sạn
+
+## Dự án này là một ứng dụng quản lý khách sạn cơ bản được xây dựng bằng Flutter & Dart
 
  Thành Phần Hệ Thống (Classes)
 Hệ thống được thiết kế dựa trên 3 đối tượng cốt lõi:
