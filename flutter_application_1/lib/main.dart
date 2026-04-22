@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// 1. Model đối tượng: Chuyển từ Member thành Customer
 class Customer {
   final String name;
   final String id;
@@ -20,127 +19,108 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Quản lý Khách sạn ABC',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), useMaterial3: true),
       home: const HotelManagementScreen(),
     );
   }
 }
 
-class HotelManagementScreen extends StatelessWidget {
+class HotelManagementScreen extends StatefulWidget {
   const HotelManagementScreen({super.key});
 
   @override
+  State<HotelManagementScreen> createState() => _HotelManagementScreenState();
+}
+
+class _HotelManagementScreenState extends State<HotelManagementScreen> {
+  final List<Customer> _customerList = [
+    Customer(name: 'Nguyễn Hoàng Sơn', id: '001xxx', roomAssigned: 'P102'),
+  ];
+
+  // Controller để lấy dữ liệu từ các ô nhập (TextField)
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _roomController = TextEditingController();
+
+  void _showAddCustomerDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Thêm Khách Thuê"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Tên khách")),
+            TextField(controller: _idController, decoration: const InputDecoration(labelText: "CCCD")),
+            TextField(controller: _roomController, decoration: const InputDecoration(labelText: "Số phòng")),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Hủy")),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _customerList.add(Customer(
+                  name: _nameController.text,
+                  id: _idController.text,
+                  roomAssigned: _roomController.text,
+                ));
+              });
+              _nameController.clear();
+              _idController.clear();
+              _roomController.clear();
+              Navigator.pop(context);
+            },
+            child: const Text("Thêm"),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  void _deleteCustomer(int index) {
+    setState(() {
+      _customerList.removeAt(index);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String hotelName = "Khách Sạn ABC";
-    String address = "Hà Nội";
-
-    List<Map<String, dynamic>> roomList = [
-      {"id": "P101", "type": "Bình dân", "price": 1500, "status": "Trống"},
-      {"id": "P102", "type": "Bình dân", "price": 1200, "status": "Đang ở"},
-      {"id": "P201", "type": "Vip", "price": 2500, "status": "Trống"},
-    ];
-
-    final List<Customer> customerList = [
-      Customer(name: 'Nguyễn Hoàng Sơn', id: 'CCCD: 001xxx', roomAssigned: 'P102'),
-      Customer(name: 'Nguyễn Minh Phương', id: 'CCCD: 002xxx', roomAssigned: 'P205'),
-      Customer(name: 'Nguyễn Việt Thái', id: 'CCCD: 003xxx', roomAssigned: 'P301'),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[100],
-        title: Text(hotelName, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("QUẢN LÝ KHÁCH SẠN", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Địa chỉ: $address", style: const TextStyle(fontStyle: FontStyle.italic)),
-                const SizedBox(height: 15),
-                const Text("DANH SÁCH PHÒNG", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const Divider(),
-              ],
-            ),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text("DANH SÁCH KHÁCH HÀNG ĐANG THUÊ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
-
           Expanded(
-            flex: 3,
             child: ListView.builder(
-              itemCount: roomList.length,
+              itemCount: _customerList.length,
               itemBuilder: (context, index) {
-                var room = roomList[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Phòng: ${room['id']}", style: const 
-                        TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Loại: ${room['type']}"),
-                        Text("\$${room['price']}", style: const 
-                        TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-                        Text("${room['status']}", style: 
-                        TextStyle(color: room['status'] == "Trống" ? Colors.green : Colors.red)),
-                      ],
-                    ),
+                final customer = _customerList[index];
+                return ListTile(
+                  leading: const CircleAvatar(child: Icon(Icons.person)),
+                  title: Text(customer.name),
+                  subtitle: Text("CCCD: ${customer.id} | Phòng: ${customer.roomAssigned}"),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _deleteCustomer(index), // Thực hiện DELETE
                   ),
                 );
               },
             ),
           ),
-
-          Container(
-            width: double.infinity,
-            color: Colors.blue[50],
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: const Text(
-              "DANH SÁCH KHÁCH HÀNG ĐANG THUÊ",
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
-            ),
-          ),
-          
-          Expanded(
-            flex: 2,
-            child: ListView(
-              children: customerList.map((customer) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(customer.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          Text(customer.id, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text("Phòng: ${customer.roomAssigned}",
-                         style: const TextStyle(fontSize: 13)),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddCustomerDialog,
+        child: const Icon(Icons.add),
       ),
     );
   }
